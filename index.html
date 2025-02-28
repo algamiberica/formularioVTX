@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Selección</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: url('DSCF9569.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Oscurece el fondo */
+            z-index: -1;
+        }
+
+        .form-container {
+            background: rgba(33, 33, 33, 0.9);
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Dos columnas, una para cada día */
+            gap: 50px; /* MÁS separación entre días */
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .grid-column {
+            display: flex;
+            flex-direction: column;
+            gap: 5px; /* MENOS espacio entre las horas dentro de cada día */
+            align-items: center;
+        }
+
+        .grid-header {
+            font-weight: bold;
+            padding: 10px;
+            background: #333;
+            border-radius: 5px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .option-button {
+            background: #666;
+            color: #ffffff;
+            border: none;
+            padding: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            width: 100%;
+        }
+
+        .option-button.selected {
+            background: #FA4616;
+        }
+
+        .option-button:hover {
+            background: #ffa726;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background: #1e1e1e;
+            color: #ffffff;
+            font-size: 16px;
+        }
+
+        button {
+            background: #ff9800;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #ffa726;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Selecciona tu horario</h1>
+
+        <div class="grid-container">
+            <!-- Columna Miércoles 12 -->
+            <div class="grid-column">
+                <div class="grid-header">Miércoles 12</div>
+                <button class="option-button" data-option="Miércoles 12 - 11:30-13h">11:30 - 13h</button>
+                <button class="option-button" data-option="Miércoles 12 - 16:00-17:30h">16:00 - 17:30h</button>
+            </div>
+
+            <!-- Columna Jueves 13 -->
+            <div class="grid-column">
+                <div class="grid-header">Jueves 13</div>
+                <button class="option-button" data-option="Jueves 13 - 11:30-13h">11:30 - 13h</button>
+                <button class="option-button" data-option="Jueves 13 - 16:00-17:30h">16:00 - 17:30h</button>
+            </div>
+        </div>
+
+        <form id="selectionForm">
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="company">Empresa:</label>
+            <input type="text" id="company" name="company" required>
+
+            <input type="hidden" id="selectedOption" name="selectedOption" required>
+
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+
+    <script>
+        document.querySelectorAll('.option-button').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.option-button').forEach(btn => btn.classList.remove('selected'));
+                button.classList.add('selected');
+                document.getElementById('selectedOption').value = button.dataset.option;
+            });
+        });
+
+        document.getElementById('selectionForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+        await fetch('https://script.google.com/macros/s/AKfycbxyxfOE-1aPIzzY1rhgJLCzoWzzeZnHWbuK5CEVsO0Kr6ktBaqeWrFZdT4G5Js6aJvsOw/exec', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+            mode: "no-cors" // Solución para evitar CORS
+        });
+
+        window.location.href = "confirmacion.html"; // Redirige tras enviar
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Hubo un error al enviar el formulario');
+    }
+});
+    </script>
+</body>
+</html>
