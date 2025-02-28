@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Selección</title>
+    <title>Demo JBL Professional | Fluge</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -17,6 +17,7 @@
             background-size: cover;
             color: #ffffff;
             position: relative;
+            flex-direction: column;
         }
 
         body::before {
@@ -26,45 +27,55 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5); /* Oscurece el fondo */
+            background: rgba(0, 0, 0, 0.5);
             z-index: -1;
         }
 
         .form-container {
             background: rgba(33, 33, 33, 0.9);
-            padding: 20px 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 600px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+            width: 95%;
+            max-width: 700px;
             text-align: center;
         }
 
-        h1 {
+        .logo {
+            max-width: 180px;
+            height: auto;
+            display: block;
+            margin: 0 auto 15px;
+        }
+
+        .title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FA4616;
             margin-bottom: 20px;
-            color: #ffffff;
         }
 
         .grid-container {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Dos columnas, una para cada día */
-            gap: 50px; /* MÁS separación entre días */
-            margin-bottom: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 30px;
             align-items: center;
         }
 
         .grid-column {
             display: flex;
             flex-direction: column;
-            gap: 5px; /* MENOS espacio entre las horas dentro de cada día */
+            gap: 10px;
             align-items: center;
         }
 
         .grid-header {
+            font-size: 18px;
             font-weight: bold;
-            padding: 10px;
+            padding: 12px;
             background: #333;
-            border-radius: 5px;
+            border-radius: 8px;
             width: 100%;
             text-align: center;
         }
@@ -73,11 +84,12 @@
             background: #666;
             color: #ffffff;
             border: none;
-            padding: 15px;
-            border-radius: 5px;
+            padding: 20px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
             width: 100%;
+            font-size: 18px;
         }
 
         .option-button.selected {
@@ -86,34 +98,39 @@
 
         .option-button:hover {
             background: #ffa726;
+            transform: scale(1.05);
         }
 
         input, button {
             width: 100%;
-            padding: 10px;
+            padding: 15px;
             margin-bottom: 15px;
             border: 1px solid #555;
-            border-radius: 5px;
+            border-radius: 8px;
             background: #1e1e1e;
             color: #ffffff;
-            font-size: 16px;
+            font-size: 18px;
         }
 
         button {
             background: #ff9800;
             border: none;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
         }
 
         button:hover {
             background: #ffa726;
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
     <div class="form-container">
-        <h1>Selecciona tu horario</h1>
+        <img class="logo" src="https://adn.harmanpro.com/assets/jbl_professional/logo-5001e495cfae9031d4d17b5cdbcceaff57605795a900aa7761112ce1539e9922.svg" alt="JBL Professional">
+        <div class="title">Demo JBL Professional | Fluge</div>
+
+        <h2>Selecciona tu horario</h2>
 
         <div class="grid-container">
             <!-- Columna Miércoles 12 -->
@@ -157,25 +174,31 @@
         });
 
         document.getElementById('selectionForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
+            event.preventDefault();
 
-    const formData = new FormData(event.target);
-    const data = Object.fromEntries(formData.entries());
+            const selectedOption = document.getElementById('selectedOption').value;
+            if (!selectedOption) {
+                alert("Por favor, selecciona un horario antes de enviar el formulario.");
+                return;
+            }
 
-    try {
-        await fetch('https://script.google.com/macros/s/AKfycbxyxfOE-1aPIzzY1rhgJLCzoWzzeZnHWbuK5CEVsO0Kr6ktBaqeWrFZdT4G5Js6aJvsOw/exec', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-            mode: "no-cors" // Solución para evitar CORS
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                await fetch('https://script.google.com/macros/s/AKfycbxajIBXcEGrWhBav0RFu82fQR-eT0ddhmiPXg84St7bsoMgX-pfRdOCspZysgFL3J4hdw/exec', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                    mode: "no-cors"
+                });
+
+                window.location.href = "confirmacion.html"; // Redirige tras enviar
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al enviar el formulario');
+            }
         });
-
-        window.location.href = "confirmacion.html"; // Redirige tras enviar
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Hubo un error al enviar el formulario');
-    }
-});
     </script>
 </body>
 </html>
